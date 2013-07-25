@@ -46,6 +46,10 @@
 		if ( methods[method] ) {
 			return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
 		} else if ( typeof method === 'object' || ! method ) {
+			// work around bugs caused by angle 0
+			if(typeof method.angle != 'undefined' && method.angle == 0){
+				method.angle = 360;
+			}
 			return methods.init.apply( this, arguments );
 		} else {
 			$.error( 'Method ' +  method + ' does not exist on jQuery.freetrans' );
