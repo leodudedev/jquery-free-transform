@@ -523,7 +523,7 @@
 		data._p.prev.left = l;
 
 		// we need a transform
-		if(data.angle != data._p.prev.angle || data.scalex != 1 || data.scaley != 1) {
+		if(data.angle != data._p.prev.angle || data.scalex != data._p.prev.scalex || data.scaley != data._p.prev.scaley) {
 			var mat = Matrix();
 			if(data.angle){ 
 				mat = mat.rotate(data._p.rad, _getRotationPoint(sel));
