@@ -32,7 +32,8 @@ You can also initialize a div with options like so:
 	$('mydiv').freetrans({
 			x: 100,
 			y: 150,
-			angle: 45
+			angle: 45,
+			maintainProp:true
 	})
 
 ##### Updating options and values
@@ -58,6 +59,7 @@ The options and properties for a selector are stored in the `$.data('freetrans')
 - `scaley`:Number (the y scale of the selector)
 - `angle`:Number (the angle (in degrees) of the rotation)
 - `'rot-origin'`:String (the location of rotation point),
+- `maintainProp`:Boolean (true maintain proportion, false (default) free transform. )
 
 The `'rot-origin'` property is a string formatted just like the `'transform-origin'` property in CSS. Like CSS, it defaults to <code>'50% 50%'</code>, which means 50% of the width and 50% of the height, eg, the center point. The first value in the string describes the x location, the second describes the y location. Passing in a single value will apply the same value to both the x and the y location. If you'd prefer to use pixel offsets and not percentages, just leave the '%' off the values. <code>'150 100'</code> will make the rotation origin point {x: 150px, y: 100px}.
 
@@ -69,6 +71,10 @@ The `'rot-origin'` property is a string formatted just like the `'transform-orig
 
 	// rotate around the point 100px to the left and 25% down the selector
 	$('mydiv').freetrans({'rot-origin': '100 25%'});
+
+	// rotate, transform and maintain aspect ratio
+	$('mydiv').freetrans({maintainProp:true});
+
 
 
 ##### Showing/Hiding the controls

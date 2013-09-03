@@ -46,10 +46,7 @@
 		if ( methods[method] ) {
 			return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
 		} else if ( typeof method === 'object' || ! method ) {
-			// work around bugs caused by angle 0
-			if(typeof method.angle != 'undefined' && method.angle == 0){
-				method.angle = 360;
-			}
+			
 			return methods.init.apply( this, arguments );
 		} else {
 			$.error( 'Method ' +  method + ' does not exist on jQuery.freetrans' );
@@ -89,6 +86,7 @@
 			scalex: 1,
 			scaley: 1, 
 			angle: 0,
+			maintainProp:false,
 			scaleLimit: 0.1,
 			'rot-origin': '50% 50%',
 			_p: {
@@ -249,7 +247,7 @@
 					mp = _rotatePoint(mp, sin, cos);
 
 					data.scalex = (mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit;
-					if (doy) data.scaley = (mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit;
+					if (doy) data.scaley = (!settings.maintainProp) ? ((mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit) : data.scalex;
 				};
 				
 				positionMe = function() {
@@ -265,7 +263,7 @@
 					mp = _rotatePoint(mp, sin, cos);
 
 					data.scalex = (mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit;
-					if (doy) data.scaley = (mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit;
+					if (doy) data.scaley = (!settings.maintainProp) ? ((mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit) : data.scalex;
 				};
 				
 				positionMe = function() {
@@ -283,8 +281,9 @@
 					mp.x -= anchor.left;
 					mp.y = anchor.top - mp.y;
 					mp = _rotatePoint(mp, sin, cos);
-					if (dox) data.scalex = (mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit;
+		
 					data.scaley = (mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit;
+					if (dox) data.scalex = (!settings.maintainProp) ? ((mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit) : data.scaley;
 				};
 				
 				positionMe = function() {
@@ -422,6 +421,13 @@
 
 		data = $.extend(data, opts);
 
+		if(opts.maintainProp){
+			data._p.divs.bc.remove();
+			data._p.divs.ml.remove();
+			data._p.divs.mr.remove();
+			data._p.divs.tc.remove();
+		}
+
 		if(opts.angle) data._p.rad = data.angle*rad;
 		if(opts.scalex) data._p.cwid = data._p.wid * opts.scalex;
 		if(opts.scaley) data._p.chgt = data._p.hgt * opts.scaley;
@@ -523,7 +529,7 @@
 		data._p.prev.left = l;
 
 		// we need a transform
-		if(data.angle != data._p.prev.angle || data.scalex != data._p.prev.scalex || data.scaley != data._p.prev.scaley) {
+		if(data.angle != data._p.prev.angle || data.scalex != 1 || data.scaley != 1) {
 			var mat = Matrix();
 			if(data.angle){ 
 				mat = mat.rotate(data._p.rad, _getRotationPoint(sel));
